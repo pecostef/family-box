@@ -1,4 +1,4 @@
-import { Bucket, Stack, StackContext } from '@serverless-stack/resources';
+import { Bucket, Stack } from '@serverless-stack/resources';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 export class StoragePolicyHelper {
@@ -53,7 +53,7 @@ export class StoragePolicyHelper {
   private createDenyNonSSLRequestsStatement(bucket: Bucket) {
     return new iam.PolicyStatement({
       sid: 'DenyNonSSLRequests',
-      principals: [this.getAnyPrincipal()],
+      notPrincipals: [new iam.ServicePrincipal('lambda.amazonaws.com')],
       actions: ['s3:*'],
       effect: iam.Effect.DENY,
       resources: [`arn:aws:s3:::${bucket.bucketName}/*`],
