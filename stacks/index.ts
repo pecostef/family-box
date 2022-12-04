@@ -1,7 +1,7 @@
 import { App } from '@serverless-stack/resources';
 import { RemovalPolicy } from 'aws-cdk-lib';
 import { areAllEnvironmentVariablesDefined } from './env';
-import { S3Stack } from './S3Stack';
+import { S3Stack } from './storage/StorageStack';
 
 export default function (app: App) {
   if (!areAllEnvironmentVariablesDefined()) {
@@ -9,10 +9,6 @@ export default function (app: App) {
     process.exit(-1);
   }
 
-  // Remove all resources when non-prod stages are removed
-  if (app.stage !== 'prod') {
-    app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
-  }
   app.setDefaultFunctionProps({
     runtime: 'nodejs16.x',
     srcPath: 'services',
