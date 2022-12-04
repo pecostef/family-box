@@ -1,9 +1,9 @@
-import AWS from 'aws-sdk';
 import { BucketInitHelper } from './BucketInitHelper';
+import { S3Client } from '@aws-sdk/client-s3';
+const s3Client = new S3Client({
+  apiVersion: '2006-03-01',
+});
 
-const s3Client = new AWS.S3({ apiVersion: '2006-03-01' });
-// TODO use parameter store to pass variables around?
-const familyNames = ['pecoraro-dotolo'];
 export async function onBucketResourceCreate() {
   await executeInit();
 }
@@ -16,11 +16,16 @@ async function executeInit() {
   const helper = new BucketInitHelper(
     s3Client,
     getFamilyBoxBucketName(),
-    familyNames
+    getFamilyNames()
   );
   await helper.initBucket();
 }
 
 function getFamilyBoxBucketName(): string {
   return process.env.bucketName ?? '';
+}
+
+// familyNames env variable example: "family1, family"
+function getFamilyNames(): string[] {
+  return process.env.familyNames?.trim()?.split(',') ?? [];
 }

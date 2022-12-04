@@ -170,6 +170,63 @@ describe('utils', () => {
       expect(applyTemplate(input, backing)).toEqual(expected);
     });
 
+    it('doeas not modify the original template', () => {
+      const input: any = [
+        {
+          name: '{name}',
+          lastName: '{lastName}',
+          age: '{age}',
+          friends: [
+            {
+              name: 'John',
+              lastName: 'Doe',
+              friendOf: {
+                name: '{name}',
+              },
+            },
+          ],
+        },
+      ];
+      const backing: any = {
+        name: 'Mario',
+        lastName: 'Rossi',
+      };
+
+      const expected = [
+        {
+          name: 'Mario',
+          lastName: 'Rossi',
+          age: '{age}',
+          friends: [
+            {
+              name: 'John',
+              lastName: 'Doe',
+              friendOf: {
+                name: 'Mario',
+              },
+            },
+          ],
+        },
+      ];
+      expect(applyTemplate(input, backing)).toEqual(expected);
+      expect(input).toEqual([
+        {
+          name: '{name}',
+          lastName: '{lastName}',
+          age: '{age}',
+          friends: [
+            {
+              name: 'John',
+              lastName: 'Doe',
+              friendOf: {
+                name: '{name}',
+              },
+            },
+          ],
+        },
+      ]);
+    });
+
     it('gracefully handles edge cases', () => {
       expect(applyTemplate(undefined, {})).toEqual(undefined);
       expect(applyTemplate(null, {})).toEqual(null);

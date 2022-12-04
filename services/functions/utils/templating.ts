@@ -1,4 +1,15 @@
 export function applyTemplate<T>(template: any, backing: any): T {
+  if (!template) {
+    return template;
+  }
+  const templateDeepCopy = JSON.parse(JSON.stringify(template));
+  if (!backing) {
+    return templateDeepCopy;
+  }
+  return applyTemplateRecursive(templateDeepCopy, backing);
+}
+
+function applyTemplateRecursive<T>(template: any, backing: any): T {
   if (!template || !backing) {
     return template;
   }

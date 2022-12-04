@@ -1,7 +1,7 @@
 import { Bucket, Stack } from '@serverless-stack/resources';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-export class StoragePolicyHelper {
+export class BucketPolicyHelper {
   constructor(private stack: Stack, private bucket: Bucket) {}
 
   createBucketPolicy(): s3.BucketPolicy {
@@ -10,9 +10,13 @@ export class StoragePolicyHelper {
     });
     policy.document.addStatements(
       this.createDenyIncorrectEncryptionHeaderStatement(this.bucket),
-      this.createDenyUnEncryptedObjectUploadsStatement(this.bucket),
-      this.createDenyNonSSLRequestsStatement(this.bucket)
+      this.createDenyUnEncryptedObjectUploadsStatement(this.bucket)
     );
+    if (this.stack.stage !== 'dev') {
+      policy.document.addStatements(
+        this.createDenyNonSSLRequestsStatement(this.bucket)
+      );
+    }
     return policy;
   }
 

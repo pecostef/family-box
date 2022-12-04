@@ -9,10 +9,6 @@ export default function (app: App) {
     process.exit(-1);
   }
 
-  // Remove all resources when non-prod stages are removed
-  if (app.stage !== 'prod') {
-    app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
-  }
   app.setDefaultFunctionProps({
     runtime: 'nodejs16.x',
     srcPath: 'services',
