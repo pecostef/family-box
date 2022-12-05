@@ -1,7 +1,7 @@
 import { App } from '@serverless-stack/resources';
-import { RemovalPolicy } from 'aws-cdk-lib';
 import { areAllEnvironmentVariablesDefined } from './env';
-import { S3Stack } from './storage/StorageStack';
+import { CronStack } from './events/CronStack';
+import { StorageStack } from './storage/StorageStack';
 
 export default function (app: App) {
   if (!areAllEnvironmentVariablesDefined()) {
@@ -17,5 +17,6 @@ export default function (app: App) {
     },
   });
 
-  app.stack(S3Stack);
+  app.stack(StorageStack);
+  app.stack(CronStack);
 }

@@ -16,9 +16,10 @@ import { BucketPolicyHelper } from './BucketPolicyHelper';
 import * as cdk from 'aws-cdk-lib';
 import { DefaultFoldersUtils } from '../../common/utils';
 
-export function S3Stack({ stack, app }: StackContext) {
+export function StorageStack({ stack, app }: StackContext): { bucket: Bucket } {
   const bucket = createBucket(stack, app);
   createInitBucketScript(stack, bucket, app);
+  return { bucket };
 }
 
 function createBucket(stack: Stack, app: App): Bucket {
