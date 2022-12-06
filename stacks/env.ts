@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const SAML_METADATA_URL_VAR_NAME = 'SAML_METADATA_URL';
 const SAML_APP_CALLBACK_URL_VAR_NAME = 'SAML_APP_CALLBACK_URL';
 const COGNITO_DOMAIN_PREFIX_VAR_NAME = 'COGNITO_DOMAIN_PREFIX';

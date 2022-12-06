@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["functions", "repository"],
+  "include": ["functions", "repository", "domain", "test"],
   "compilerOptions": {
     "module": "esnext",
     "target": "es2017",

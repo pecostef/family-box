@@ -1,5 +1,5 @@
 import { Cognito, StackContext } from '@serverless-stack/resources';
-import { aws_cognito as cognito, CfnParameter } from 'aws-cdk-lib';
+import { aws_cognito as cognito } from 'aws-cdk-lib';
 import {
   getSamlProviderMetadataUrl,
   getSamlAppCallbackUrl,
@@ -21,7 +21,7 @@ export function AuthStack({ stack }: StackContext) {
     },
   });
 
-  const userPoolIdentityProviderSaml = new cognito.UserPoolIdentityProviderSaml(
+  new cognito.UserPoolIdentityProviderSaml(
     stack,
     'FamilyBoxUserPoolIdentityProviderSaml',
     {
