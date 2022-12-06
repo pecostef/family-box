@@ -10,7 +10,7 @@ import { getAWSRegion, getSSOIdentityStoreId } from '../lib/env';
 
 const client = new IdentitystoreClient({ region: getAWSRegion() });
 const groupDisplayName = 'FamilyBox';
-(async () => {
+void (async () => {
   const familyBoxGroup = await findByGroupDisplayName(groupDisplayName);
 
   const app = new cdk.App();
@@ -18,8 +18,8 @@ const groupDisplayName = 'FamilyBox';
     app,
     'SsoCdkStack',
     {
-      groupId: familyBoxGroup!.GroupId!,
-      groupName: familyBoxGroup!.DisplayName!,
+      groupId: familyBoxGroup?.GroupId!,
+      groupName: familyBoxGroup?.DisplayName!,
     },
     {}
   );

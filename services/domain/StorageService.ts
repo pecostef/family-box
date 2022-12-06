@@ -87,7 +87,7 @@ export class StorageService {
   ): Promise<string[]> {
     const foldersToCreate: string[] = [];
 
-    for (let familyName of familyNames) {
+    for (const familyName of familyNames) {
       const folders = await this.computeFoldersForFamily(familyName);
       foldersToCreate.push(...folders);
     }

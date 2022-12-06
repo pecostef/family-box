@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "rules": {
+    "@typescript-eslint/no-floating-promises": "error"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": ["./tsconfig.json", "./services/tsconfig.json"]
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "ignorePatterns": ["vitest.config.ts", "sso-cdk/**/*.ts", "*.test.ts"]
+}
