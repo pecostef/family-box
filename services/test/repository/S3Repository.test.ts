@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, SpyInstance, vi } from 'vitest';
 import {
-  S3Client,
   HeadObjectCommand,
   PutObjectCommand,
+  S3Client,
   S3ServiceException,
 } from '@aws-sdk/client-s3';
-import { mockClient, AwsStub } from 'aws-sdk-client-mock';
+import { AwsStub, mockClient } from 'aws-sdk-client-mock';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { S3Repository } from '../../repository/S3Repository';
 describe('S3Repository', () => {
   let s3Client: AwsStub<any, any>;

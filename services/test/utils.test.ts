@@ -230,12 +230,12 @@ describe('utils', () => {
     it('gracefully handles edge cases', () => {
       expect(applyTemplate(undefined, {})).toEqual(undefined);
       expect(applyTemplate(null, {})).toEqual(null);
-      expect(applyTemplate(undefined, undefined)).toEqual(undefined);
-      expect(applyTemplate(null, null)).toEqual(null);
-      expect(applyTemplate({ prop: 'someval' }, null)).toEqual({
+      expect(applyTemplate(undefined, {})).toEqual(undefined);
+      expect(applyTemplate(null, {})).toEqual(null);
+      expect(applyTemplate({ prop: 'someval' }, {})).toEqual({
         prop: 'someval',
       });
-      expect(applyTemplate({ prop: '{val}', b: null }, undefined)).toEqual({
+      expect(applyTemplate({ prop: '{val}', b: null }, {})).toEqual({
         prop: '{val}',
         b: null,
       });
