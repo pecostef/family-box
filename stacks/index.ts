@@ -1,5 +1,6 @@
 import { App } from '@serverless-stack/resources';
 import { AppStack } from './app/AppStack';
+import { AuthStack } from './AuthStack';
 import { areAllEnvironmentVariablesDefined } from './env';
 import { CronStack } from './events/CronStack';
 import { StorageStack } from './storage/StorageStack';
@@ -18,7 +19,8 @@ export default function (app: App) {
     },
   });
 
-  app.stack(StorageStack);
-  app.stack(CronStack);
-  app.stack(AppStack);
+  //app.stack(StorageStack);
+  //app.stack(CronStack);
+  app.stack(AuthStack);
+  // app.stack(AppStack);
 }

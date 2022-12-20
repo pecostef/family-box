@@ -1,5 +1,5 @@
 import { Cognito, StackContext } from '@serverless-stack/resources';
-import { aws_cognito as cognito } from 'aws-cdk-lib';
+import { aws_cognito as cognito, RemovalPolicy } from 'aws-cdk-lib';
 import {
   getSamlProviderMetadataUrl,
   getSamlAppCallbackUrl,
@@ -7,17 +7,15 @@ import {
 } from './env';
 
 const SAML_IDP_PROVIDER_IDENTIFIER = 'AWSSSOIDP';
-export function AuthStack({ stack }: StackContext) {
-  const auth = new Cognito(stack, 'Auth', {
-    cdk: {
-      userPoolClient: getUserPoolClientOptions(),
-      userPool: {
-        standardAttributes: {
-          fullname: { required: true, mutable: false },
-          email: { required: true, mutable: false },
-          familyName: { required: true, mutable: false },
-        },
-      },
+export function AuthStack({ stack, app }: StackContext) {
+  const userPool = new cognito.UserPool(stack, 'FamilyBoxUserPool', {
+    userPoolName: app.logicalPrefixedName('family-box-user-pool'),
+    removalPolicy:
+      app.stage !== 'prod' ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
+    standardAttributes: {
+      fullname: { required: true },
+      email: { required: true },
+      familyName: { required: true },
     },
   });
 
@@ -26,7 +24,7 @@ export function AuthStack({ stack }: StackContext) {
     'FamilyBoxUserPoolIdentityProviderSaml',
     {
       metadata: getIdPSamlMetadata(),
-      userPool: auth.cdk.userPool,
+      userPool: userPool,
 
       // the properties below are optional
       attributeMapping: getSamlAttributeMapping(),
@@ -36,13 +34,10 @@ export function AuthStack({ stack }: StackContext) {
     }
   );
 
-  auth.cdk.userPool.addDomain(
-    'FamilyBoxUserPoolDomain',
-    getUserPoolDomainOptions()
-  );
-
+  userPool.addDomain('FamilyBoxUserPoolDomain', getUserPoolDomainOptions());
+  userPool.addClient('FamilyBoxUserPoolClient', getUserPoolClientOptions());
   return {
-    auth,
+    userPool,
   };
 }
 
@@ -69,9 +64,10 @@ function getUserPoolClientOptions(): cognito.UserPoolClientOptions {
       ),
     ],
     oAuth: {
-      callbackUrls: [getSamlAppCallbackUrl()],
+      callbackUrls: [getSamlAppCallbackUrl(), 'http://localhost:3000/login'],
       flows: {
         implicitCodeGrant: true,
+        authorizationCodeGrant: true,
       },
       scopes: [
         {
