@@ -4,10 +4,17 @@ import {
   redirect,
   Session,
 } from '@remix-run/node';
+import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
+import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
+
 const sessionSecret = process.env.SESSION_SECRET as string;
 const cognitoDomain = process.env.COGNITO_DOMAIN as string;
 const clientId = process.env.CLIENT_ID as string;
 const idpName = process.env.IDP_NAME as string;
+const identityPoolId = process.env.COGNITO_IDENTITY_POOL_ID as string;
+const identityProvider = process.env.COGNITO_IDENTITY_PROVIDER as string;
+const region = process.env.COGNITO_REGION as string;
+
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET must be set');
 }
@@ -241,3 +248,31 @@ async function refreshAccessToken(request: any, redirectUri: string) {
   }
   return ret;
 }
+
+async function getIdToken(request: Request) {
+  const cookieHeaders = request.headers.get('Cookie');
+  if (cookieHeaders) {
+    const cookieIdTokenValue = await (cookieIdToken.parse(cookieHeaders) || {});
+    return cookieIdTokenValue.id_token;
+  }
+  return null;
+}
+
+export const getCognitoCredentials = async (request: Request) => {
+  const idToken = await getIdToken(request);
+  if (!idToken) {
+    return null;
+  }
+  const creds = fromCognitoIdentityPool({
+    client: new CognitoIdentityClient({
+      region,
+    }),
+    identityPoolId,
+    logins: {
+      [identityProvider]: idToken,
+    },
+  });
+
+  const credentials = await creds();
+  return credentials;
+};
