@@ -1,9 +1,4 @@
-import {
-  GetObjectCommand,
-  ListObjectsCommand,
-  PutObjectCommand,
-  S3Client,
-} from '@aws-sdk/client-s3';
+import { ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 
 const bucket = process.env.S3_BUCKET;
 const region = process.env.BUCKET_REGION;
@@ -13,12 +8,15 @@ const listItems = async (credentials: any) => {
     region,
     credentials,
   });
-  const { Contents } = await client.send(
-    new ListObjectsCommand({
+  const response = await client.send(
+    new ListObjectsV2Command({
       Bucket: bucket,
+      Prefix: '/home/',
+      Delimiter: '/',
     })
   );
 
+  const { Contents } = response;
   if (!Contents) {
     return [];
   }

@@ -20,9 +20,9 @@ export function generateCognitoAuthRolePermissionStatements(
       Condition: {
         StringEquals: {
           's3:prefix': [
-            '',
-            'home/',
-            'home/${cognito-identity.amazonaws.com:sub}',
+            '/',
+            '/home/',
+            '/${cognito-identity.amazonaws.com:sub}/',
           ],
           's3:delimiter': ['/'],
         },
@@ -34,20 +34,8 @@ export function generateCognitoAuthRolePermissionStatements(
     },
     {
       Condition: {
-        StringEquals: {
-          's3:prefix': ['', 'home/', `home/${familyFolderName}`],
-          's3:delimiter': ['/'],
-        },
-      },
-      Action: 's3:ListBucket',
-      Resource: `arn:aws:s3:::${bucketName}`,
-      Effect: 'Allow',
-      Sid: getSid('AllowFamilyFolderListingOfFamilyBoxBucket', cleanFolderName),
-    },
-    {
-      Condition: {
         StringLike: {
-          's3:prefix': ['home/${cognito-identity.amazonaws.com:sub}/*'],
+          's3:prefix': ['/${cognito-identity.amazonaws.com:sub}/*'],
         },
       },
       Action: 's3:ListBucket',
@@ -56,27 +44,16 @@ export function generateCognitoAuthRolePermissionStatements(
       Sid: getSid('AllowListingOfUserFolder', cleanFolderName),
     },
     {
-      Condition: {
-        StringLike: {
-          's3:prefix': [`home/${familyFolderName}/*`],
-        },
-      },
-      Action: 's3:ListBucket',
-      Resource: `arn:aws:s3:::${bucketName}`,
-      Effect: 'Allow',
-      Sid: getSid('AllowListingOfFamilyFolder', cleanFolderName),
-    },
-    {
       Action: 's3:*',
-      Resource: `arn:aws:s3:::${bucketName}/home/\${cognito-identity.amazonaws.com:sub}/*`,
+      Resource: `arn:aws:s3:::${bucketName}/\${cognito-identity.amazonaws.com:sub}/*`,
       Effect: 'Allow',
       Sid: getSid('AllowAllS3ActionsInUserFolder', cleanFolderName),
     },
     {
-      Action: 's3:*',
-      Resource: `arn:aws:s3:::${bucketName}/home/${familyFolderName}/*`,
+      Action: 's3:PutObject',
+      Resource: `arn:aws:s3:::${bucketName}/home/*`,
       Effect: 'Allow',
-      Sid: getSid('AllowAllS3ActionsInFamilyFolder', cleanFolderName),
+      Sid: getSid('AllowPutObjectsInFamilyFolder', cleanFolderName),
     },
   ];
 }

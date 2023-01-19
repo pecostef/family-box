@@ -13,7 +13,7 @@ const clientId = process.env.CLIENT_ID as string;
 const idpName = process.env.IDP_NAME as string;
 const identityPoolId = process.env.COGNITO_IDENTITY_POOL_ID as string;
 const identityProvider = process.env.COGNITO_IDENTITY_PROVIDER as string;
-const region = process.env.COGNITO_REGION as string;
+const region = process.env.COGNITO_IDENTITY_POOL_REGION as string;
 
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET must be set');
@@ -204,7 +204,7 @@ async function hasValidAccessToken(request: any) {
     const cookieAccessTokenValue = await (cookieAccessToken.parse(
       cookieHeaders
     ) || {});
-    if (cookieAccessTokenValue.access_token) {
+    if (cookieAccessTokenValue?.access_token) {
       return await getUser(cookieAccessTokenValue.access_token);
     }
   }
@@ -222,7 +222,7 @@ async function refreshAccessToken(request: any, redirectUri: string) {
     const cookieRefreshTokenValue = await (cookieRefreshToken.parse(
       cookieHeaders
     ) || {});
-    if (cookieRefreshTokenValue.refresh_token) {
+    if (cookieRefreshTokenValue?.refresh_token) {
       const uri = `https://${cognitoDomain}/oauth2/token`;
       const body = {
         grant_type: 'refresh_token',

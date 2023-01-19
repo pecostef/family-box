@@ -11,6 +11,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   try {
     return await auth.authenticate(request);
   } catch (error) {
+    console.log(error);
     return {};
   }
 };
