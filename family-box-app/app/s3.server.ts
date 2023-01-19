@@ -11,10 +11,12 @@ const listItems = async (credentials: any) => {
   const response = await client.send(
     new ListObjectsV2Command({
       Bucket: bucket,
-      Prefix: '/home/',
+      Prefix: '/',
       Delimiter: '/',
     })
   );
+
+  console.log(response);
 
   const { Contents } = response;
   if (!Contents) {

@@ -20,7 +20,7 @@ export default function (app: App) {
   });
 
   app.stack(StorageStack);
-  //app.stack(CronStack);
+  app.stack(CronStack);
   app.stack(AuthStack);
   // app.stack(AppStack);
 }

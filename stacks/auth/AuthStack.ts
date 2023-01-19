@@ -8,9 +8,8 @@ import { aws_cognito as cognito, RemovalPolicy } from 'aws-cdk-lib';
 import { aws_iam as iam } from 'aws-cdk-lib';
 import {
   getSamlProviderMetadataUrl,
-  getSamlAppCallbackUrl,
+  getSamlAppCallbackUrls,
   getCognitoDomainPrefix,
-  getFamilyNamesAsArray,
 } from '../env';
 import { StorageStack } from '../storage/StorageStack';
 import { generateCognitoAuthRolePermissionStatements } from './policies';
@@ -87,7 +86,7 @@ function getUserPoolClientOptions(): cognito.UserPoolClientOptions {
       ),
     ],
     oAuth: {
-      callbackUrls: [getSamlAppCallbackUrl(), 'http://localhost:3000/login'],
+      callbackUrls: getSamlAppCallbackUrls(),
       flows: {
         implicitCodeGrant: true,
         authorizationCodeGrant: true,
@@ -180,16 +179,11 @@ function createIdentityPool(
     ),
     path: '/',
   });
-  const familyPolicyStatements = getFamilyNamesAsArray()
-    .map((family) =>
-      generateCognitoAuthRolePermissionStatements(bucket.bucketName, family)
-    )
-    .reduce((arr, stm) => {
-      arr.push(...stm);
-      return arr;
-    }, []);
-  console.log(familyPolicyStatements);
-  familyPolicyStatements.forEach((p) => {
+  const policyStatements = generateCognitoAuthRolePermissionStatements(
+    bucket.bucketName
+  );
+
+  policyStatements.forEach((p) => {
     const statement = iam.PolicyStatement.fromJson(p);
     cognitoAuthRole.addToPolicy(statement);
   });

@@ -8,30 +8,21 @@ export class StorageService {
     private storageConfig: StorageConfig
   ) {
     this.computeFoldersToCreate.bind(this);
-    this.computeFoldersForFamily.bind(this);
     this.createFolders.bind(this);
   }
 
-  async initializeStorage(familyNames: string[]) {
-    const foldersToCreate = await this.computeFoldersToCreate(familyNames);
+  async initializeStorage() {
+    const foldersToCreate = await this.computeFoldersToCreate();
     await this.createFolders(foldersToCreate);
   }
 
-  async createYearlyFolders(familyNames: string[]) {
+  async createYearlyFolders() {
     const foldersToCreate = [];
     const year = new Date().getFullYear();
-    for (const familyName of familyNames) {
-      foldersToCreate.push(
-        DefaultFoldersUtils.getYearlyBillingAndReceiptsFolderPrefix(
-          familyName,
-          year
-        ),
-        DefaultFoldersUtils.getYearlyFinancialRecordsFolderPrefix(
-          familyName,
-          year
-        )
-      );
-    }
+    foldersToCreate.push(
+      DefaultFoldersUtils.getYearlyBillingAndReceiptsFolderPrefix(year),
+      DefaultFoldersUtils.getYearlyFinancialRecordsFolderPrefix(year)
+    );
     for (const folder of foldersToCreate) {
       try {
         if (
@@ -54,13 +45,11 @@ export class StorageService {
     }
   }
 
-  private async computeFoldersForFamily(familyName: string): Promise<string[]> {
+  private async computeFoldersToCreate(): Promise<string[]> {
     const foldersToCreate: string[] = [];
+
     const currentYear = new Date().getFullYear();
-    const defaultFolders = DefaultFoldersUtils.getDefaultFolders(
-      familyName,
-      currentYear
-    );
+    const defaultFolders = DefaultFoldersUtils.getDefaultFolders(currentYear);
 
     for (const folderPath of defaultFolders) {
       try {
@@ -78,18 +67,6 @@ export class StorageService {
           e
         );
       }
-    }
-    return foldersToCreate;
-  }
-
-  private async computeFoldersToCreate(
-    familyNames: string[]
-  ): Promise<string[]> {
-    const foldersToCreate: string[] = [];
-
-    for (const familyName of familyNames) {
-      const folders = await this.computeFoldersForFamily(familyName);
-      foldersToCreate.push(...folders);
     }
 
     return foldersToCreate;
