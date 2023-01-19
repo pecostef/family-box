@@ -8,7 +8,6 @@ import {
 } from '@serverless-stack/resources';
 import { StorageStack } from '../storage/StorageStack';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { getFamilyNames } from '../env';
 import { Schedule } from 'aws-cdk-lib/aws-events';
 
 export function CronStack({ stack, app }: StackContext) {
@@ -29,7 +28,6 @@ function createYearlyFoldersCron(stack: Stack, app: App) {
       logRetention: 'three_months',
       environment: {
         bucketName: bucket.bucketName,
-        familyNames: getFamilyNames(),
       },
     }
   );

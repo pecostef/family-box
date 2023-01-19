@@ -5,11 +5,7 @@ import {
   Stack,
   StackContext,
 } from '@serverless-stack/resources';
-import {
-  getBucketNamePrefix,
-  getFamilyNames,
-  getFamilyNamesAsArray,
-} from '../env';
+import { getBucketNamePrefix } from '../env';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { BucketPolicyHelper } from './BucketPolicyHelper';
@@ -57,48 +53,44 @@ function createAbortMultipartUploadLifeCycleRule(): s3.LifecycleRule {
 
 function createBillsAndReceiptsLifecyclePolicies(): s3.LifecycleRule[] {
   const policies: s3.LifecycleRule[] = [];
-  for (const familyName of getFamilyNamesAsArray()) {
-    policies.push({
-      id: `BillsAndReceiptsLifecyclePolicies_${familyName}`,
-      prefix: DefaultFoldersUtils.getBillingAndReceiptsFolderPrefix(familyName),
-      expiration: cdk.Duration.days(2 * 365),
-      transitions: [
-        {
-          storageClass: s3.StorageClass.INFREQUENT_ACCESS,
-          transitionAfter: cdk.Duration.days(30),
-        },
-        {
-          storageClass: s3.StorageClass.GLACIER,
-          transitionAfter: cdk.Duration.days(3 * 30),
-        },
-      ],
-    });
-  }
+  policies.push({
+    id: 'BillsAndReceiptsLifecyclePolicies',
+    prefix: DefaultFoldersUtils.getBillingAndReceiptsFolderPrefix(),
+    expiration: cdk.Duration.days(2 * 365),
+    transitions: [
+      {
+        storageClass: s3.StorageClass.INFREQUENT_ACCESS,
+        transitionAfter: cdk.Duration.days(30),
+      },
+      {
+        storageClass: s3.StorageClass.GLACIER,
+        transitionAfter: cdk.Duration.days(3 * 30),
+      },
+    ],
+  });
   return policies;
 }
 
 function createFinancialRecordsLifecyclePolicies(): s3.LifecycleRule[] {
   const policies: s3.LifecycleRule[] = [];
-  for (const familyName of getFamilyNamesAsArray()) {
-    policies.push({
-      id: `FinancialRecordsLifecyclePolicies_${familyName}`,
-      prefix: DefaultFoldersUtils.getFinancialRecordsFolderPrefix(familyName),
-      transitions: [
-        {
-          storageClass: s3.StorageClass.INFREQUENT_ACCESS,
-          transitionAfter: cdk.Duration.days(365),
-        },
-        {
-          storageClass: s3.StorageClass.GLACIER,
-          transitionAfter: cdk.Duration.days(2 * 365),
-        },
-        {
-          storageClass: s3.StorageClass.DEEP_ARCHIVE,
-          transitionAfter: cdk.Duration.days(4 * 365),
-        },
-      ],
-    });
-  }
+  policies.push({
+    id: 'FinancialRecordsLifecyclePolicies',
+    prefix: DefaultFoldersUtils.getFinancialRecordsFolderPrefix(),
+    transitions: [
+      {
+        storageClass: s3.StorageClass.INFREQUENT_ACCESS,
+        transitionAfter: cdk.Duration.days(365),
+      },
+      {
+        storageClass: s3.StorageClass.GLACIER,
+        transitionAfter: cdk.Duration.days(2 * 365),
+      },
+      {
+        storageClass: s3.StorageClass.DEEP_ARCHIVE,
+        transitionAfter: cdk.Duration.days(4 * 365),
+      },
+    ],
+  });
   return policies;
 }
 
@@ -109,7 +101,6 @@ function createInitBucketScript(stack: Stack, bucket: Bucket, app: App) {
         srcPath: 'services/functions/storage/',
         environment: {
           bucketName: bucket.bucketName,
-          familyNames: getFamilyNames(),
         },
         logRetention: 'two_weeks',
       },

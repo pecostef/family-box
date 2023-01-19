@@ -38,178 +38,96 @@ describe('StorageService', () => {
           .mockResolvedValue();
       });
       it('should call existsFolder on the repository for each of the default folder', async () => {
-        await service.initializeStorage(['my-family', 'my-parents-family']);
+        await service.initializeStorage();
 
-        expect(existsFolderSpy).toBeCalledTimes(20);
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/vital-records/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passports+identification/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/will+deeds/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/medical-records/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/policies/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/financial-records/2023/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/employment+educational/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passwords/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/bills+receipts/2023/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/home-documents/'
-        );
+        expect(existsFolderSpy).toBeCalledTimes(10);
 
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/vital-records/'
+          '/home/vital-records/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passports+identification/'
+          '/home/passports+identification/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/will+deeds/'
+          '/home/will+deeds/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/medical-records/'
+          '/home/medical-records/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/policies/'
+          '/home/policies/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/financial-records/2023/'
+          '/home/financial-records/2023/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/employment+educational/'
+          '/home/employment+educational/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passwords/'
+          '/home/passwords/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/bills+receipts/2023/'
+          '/home/bills+receipts/2023/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/home-documents/'
+          '/home/home-documents/'
         );
       });
 
       it('should call createFolder on the repository for each of the default folder', async () => {
-        await service.initializeStorage(['my-family', 'my-parents-family']);
+        await service.initializeStorage();
 
-        expect(createFolderSpy).toBeCalledTimes(20);
-
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/vital-records/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passports+identification/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/will+deeds/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/medical-records/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/policies/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/financial-records/2023/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/employment+educational/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passwords/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/bills+receipts/2023/'
-        );
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/home-documents/'
-        );
+        expect(createFolderSpy).toBeCalledTimes(10);
 
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/vital-records/'
+          '/home/vital-records/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passports+identification/'
+          '/home/passports+identification/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/will+deeds/'
+          '/home/will+deeds/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/medical-records/'
+          '/home/medical-records/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/policies/'
+          '/home/policies/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/financial-records/2023/'
+          '/home/financial-records/2023/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/employment+educational/'
+          '/home/employment+educational/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passwords/'
+          '/home/passwords/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/bills+receipts/2023/'
+          '/home/bills+receipts/2023/'
         );
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/home-documents/'
+          '/home/home-documents/'
         );
       });
     });
@@ -224,95 +142,54 @@ describe('StorageService', () => {
           .mockResolvedValue();
       });
       it('should call existsFolder on the repository for each of the default folders', async () => {
-        await service.initializeStorage(['my-family', 'my-parents-family']);
+        await service.initializeStorage();
 
-        expect(existsFolderSpy).toBeCalledTimes(20);
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/vital-records/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passports+identification/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/will+deeds/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/medical-records/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/policies/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/financial-records/2023/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/employment+educational/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/passwords/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/bills+receipts/2023/'
-        );
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-family/home-documents/'
-        );
+        expect(existsFolderSpy).toBeCalledTimes(10);
 
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/vital-records/'
+          '/home/vital-records/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passports+identification/'
+          '/home/passports+identification/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/will+deeds/'
+          '/home/will+deeds/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/medical-records/'
+          '/home/medical-records/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/policies/'
+          '/home/policies/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/financial-records/2023/'
+          '/home/financial-records/2023/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/employment+educational/'
+          '/home/employment+educational/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/passwords/'
+          '/home/passwords/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/bills+receipts/2023/'
+          '/home/bills+receipts/2023/'
         );
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-parents-family/home-documents/'
+          '/home/home-documents/'
         );
       });
 
       it('should not call createFolder on the repository at all', async () => {
-        await service.initializeStorage(['my-family', 'my-parents-family']);
+        await service.initializeStorage();
 
         expect(createFolderSpy).not.toHaveBeenCalled();
       });
@@ -339,53 +216,33 @@ describe('StorageService', () => {
           .mockResolvedValue();
       });
       it('should call existsFolder on the repository for each of the default folder', async () => {
-        await service.createYearlyFolders(['my-family', 'my-parents-family']);
+        await service.createYearlyFolders();
 
-        expect(existsFolderSpy).toBeCalledTimes(4);
+        expect(existsFolderSpy).toBeCalledTimes(2);
 
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/bills+receipts/2025/'
+          '/home/bills+receipts/2025/'
         );
 
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/financial-records/2025/'
-        );
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/financial-records/2025/'
-        );
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/bills+receipts/2025/'
+          '/home/financial-records/2025/'
         );
       });
 
       it('should call createFolder on the repository for each of the default folder', async () => {
-        await service.createYearlyFolders(['my-family', 'my-parents-family']);
+        await service.createYearlyFolders();
 
-        expect(createFolderSpy).toBeCalledTimes(4);
+        expect(createFolderSpy).toBeCalledTimes(2);
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/bills+receipts/2025/'
+          '/home/bills+receipts/2025/'
         );
 
         expect(createFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/financial-records/2025/'
-        );
-
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/financial-records/2025/'
-        );
-
-        expect(createFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/bills+receipts/2025/'
+          '/home/financial-records/2025/'
         );
       });
     });
@@ -400,32 +257,22 @@ describe('StorageService', () => {
           .mockResolvedValue();
       });
       it('should call existsFolder on the repository for each of the default folders', async () => {
-        await service.createYearlyFolders(['my-family', 'my-parents-family']);
+        await service.createYearlyFolders();
 
-        expect(existsFolderSpy).toBeCalledTimes(4);
+        expect(existsFolderSpy).toBeCalledTimes(2);
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/bills+receipts/2025/'
+          '/home/bills+receipts/2025/'
         );
 
         expect(existsFolderSpy).toHaveBeenCalledWith(
           'my-bucket',
-          '/home/my-family/financial-records/2025/'
-        );
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/financial-records/2025/'
-        );
-
-        expect(existsFolderSpy).toHaveBeenCalledWith(
-          'my-bucket',
-          '/home/my-parents-family/bills+receipts/2025/'
+          '/home/financial-records/2025/'
         );
       });
 
       it('should not call createFolder on the repository at all', async () => {
-        await service.createYearlyFolders(['my-family', 'my-parents-family']);
+        await service.createYearlyFolders();
 
         expect(createFolderSpy).not.toHaveBeenCalled();
       });
