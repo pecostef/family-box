@@ -1,12 +1,15 @@
 import { LoaderFunction } from '@remix-run/node';
-import { listItems } from '~/s3.server';
-import { getCognitoCredentials } from '~/auth.server';
+import { getIdToken, getUserFromSession } from '../auth.server';
+import { CreatePersonalFolderUseCase } from '../di';
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const creds = await getCognitoCredentials(request);
-    console.log('identityId', creds?.identityId);
-    return await listItems(creds);
+    const user = await getUserFromSession(request);
+    const err = await CreatePersonalFolderUseCase.execute(user!);
+    if (err instanceof Error) {
+      return { error: 'could not create personal folder' };
+    }
+    return await getUserFromSession(request);
   } catch (error) {
     console.log(error);
     return {};

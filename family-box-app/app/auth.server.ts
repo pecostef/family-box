@@ -4,16 +4,21 @@ import {
   redirect,
   Session,
 } from '@remix-run/node';
-import { fromCognitoIdentityPool } from '@aws-sdk/credential-provider-cognito-identity';
-import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
+import { User, UserProps } from './domain';
+import {
+  getCognitoDomain,
+  getIdpName,
+  getOauthClientId,
+  getSessionSecret,
+  isProductionEnvironment,
+} from './env';
+import { getCognitoCredentialsFromIdToken } from './repository/utils';
 
-const sessionSecret = process.env.SESSION_SECRET as string;
-const cognitoDomain = process.env.COGNITO_DOMAIN as string;
-const clientId = process.env.CLIENT_ID as string;
-const idpName = process.env.IDP_NAME as string;
-const identityPoolId = process.env.COGNITO_IDENTITY_POOL_ID as string;
-const identityProvider = process.env.COGNITO_IDENTITY_PROVIDER as string;
-const region = process.env.COGNITO_IDENTITY_POOL_REGION as string;
+const USER_SESSION_KEY_NAME = 'user';
+const sessionSecret = getSessionSecret();
+const cognitoDomain = getCognitoDomain();
+const clientId = getOauthClientId();
+const idpName = getIdpName();
 
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET must be set');
@@ -27,14 +32,14 @@ if (!clientId) {
 
 const cookieSettings = {
   maxAge: 60 * 60 * 30,
-  secure: process.env.NODE_ENV === 'production',
+  secure: isProductionEnvironment(),
   secrets: [sessionSecret],
   httpOnly: true,
 };
 
 const sessionStorageCookieSettings = {
   maxAge: 60 * 60,
-  secure: process.env.NODE_ENV === 'production',
+  secure: isProductionEnvironment(),
   secrets: [sessionSecret],
   httpOnly: true,
 };
@@ -54,8 +59,8 @@ export async function authenticate(request: Request) {
     url.searchParams.get('redirectTo') || '/'
   );
   const headers = new Headers();
-  let user = await getUserFromSessionStorage(request);
-  console.log('usersession', user);
+  let user: unknown = await getUserFromSession(request);
+  let idPoolIdToken;
   if (code) {
     //If the url has a code, we redirected the user to the cognito and they were authenticated
     const tokenResponse = await getToken(code, redirectUri);
@@ -82,6 +87,7 @@ export async function authenticate(request: Request) {
           refresh_token,
         })
       );
+      idPoolIdToken = id_token;
     }
   }
   //The url does not have a code, so this is the first time we are hitting the login page
@@ -117,6 +123,7 @@ export async function authenticate(request: Request) {
             })
           );
         }
+        idPoolIdToken = idToken;
       }
     }
     if (!user) {
@@ -131,7 +138,11 @@ export async function authenticate(request: Request) {
   }
   if (user) {
     // persist the user in the session
-    const session = await createUserSession(user);
+    const userProps: UserProps = { ...user } as UserProps;
+    const creds = await getCognitoCredentialsFromIdToken(idPoolIdToken);
+    userProps.identityId = creds?.identityId!;
+    userProps.storageCredentials = creds;
+    const session = await createUserSession(userProps);
     headers.append('Set-cookie', await sessionStorage.commitSession(session));
     const state = url.searchParams.get('state');
     const finalRedirectTo = decodeURIComponent(state || redirectTo);
@@ -161,22 +172,37 @@ async function getToken(code: string, redirectUri: string) {
   return response;
 }
 
-export async function getUserFromSessionStorage(
+export async function getUserFromSession(
   request: Request
-): Promise<any | null> {
+): Promise<User | null> {
   const cookieHeaders = request.headers.get('Cookie');
   if (cookieHeaders) {
     const session = await sessionStorage.getSession(
       request.headers.get('Cookie')
     );
-    return session.get('user');
+    const userProps = session.get(USER_SESSION_KEY_NAME) as UserProps;
+    const storageCredentials = await getCognitoCredentialsFromIdToken(
+      await getIdToken(request)
+    );
+    userProps.storageCredentials = storageCredentials;
+    const user = new User(userProps);
+    session.set(USER_SESSION_KEY_NAME, user.toJson());
+    request.headers.append(
+      'Set-cookie',
+      await sessionStorage.commitSession(session)
+    );
+
+    return user;
   }
   return null;
 }
 
-export async function createUserSession(user: any): Promise<Session> {
+export async function createUserSession(
+  userProps: UserProps
+): Promise<Session> {
+  const user = new User(userProps);
   const session = await sessionStorage.getSession();
-  session.set('user', user);
+  session.set(USER_SESSION_KEY_NAME, user.toJson());
   return session;
 }
 
@@ -249,7 +275,7 @@ async function refreshAccessToken(request: any, redirectUri: string) {
   return ret;
 }
 
-async function getIdToken(request: Request) {
+export async function getIdToken(request: Request) {
   const cookieHeaders = request.headers.get('Cookie');
   if (cookieHeaders) {
     const cookieIdTokenValue = await (cookieIdToken.parse(cookieHeaders) || {});
@@ -257,22 +283,3 @@ async function getIdToken(request: Request) {
   }
   return null;
 }
-
-export const getCognitoCredentials = async (request: Request) => {
-  const idToken = await getIdToken(request);
-  if (!idToken) {
-    return null;
-  }
-  const creds = fromCognitoIdentityPool({
-    client: new CognitoIdentityClient({
-      region,
-    }),
-    identityPoolId,
-    logins: {
-      [identityProvider]: idToken,
-    },
-  });
-
-  const credentials = await creds();
-  return credentials;
-};
