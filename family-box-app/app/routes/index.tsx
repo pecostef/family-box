@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { LoaderFunction, redirect } from '@remix-run/node';
 import { getUserFromSession } from '~/auth.server';
+import { RemixSession } from '../adapters/RemixSession';
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUserFromSession(request);
+  const session = new RemixSession(request);
+  const user = await getUserFromSession(session);
   if (user) {
     return redirect('folders');
   }
