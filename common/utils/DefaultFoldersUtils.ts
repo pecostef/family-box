@@ -1,20 +1,20 @@
 import { applyTemplate } from '../../services/functions/utils';
-const billsAndReceiptsFolderTemplate = '/home/bills+receipts';
+const billsAndReceiptsFolderTemplate = 'home/bills+receipts';
 const billsAndReceiptsYearlyFolderTemplate = `${billsAndReceiptsFolderTemplate}/{year}`;
-const financialRecordsFolderTemplate = '/home/financial-records';
+const financialRecordsFolderTemplate = 'home/financial-records';
 const financialRecordsYearlyFolderTemplate = `${financialRecordsFolderTemplate}/{year}`;
 function getDefaultFoldersTemplate(): string[] {
   return [
-    '/home/vital-records/',
-    '/home/passports+identification/',
-    '/home/will+deeds/',
-    '/home/medical-records/',
-    '/home/policies/',
+    'home/vital-records/',
+    'home/passports+identification/',
+    'home/will+deeds/',
+    'home/medical-records/',
+    'home/policies/',
     `${billsAndReceiptsYearlyFolderTemplate}/`,
-    '/home/employment+educational/',
-    '/home/passwords/',
+    'home/employment+educational/',
+    'home/passwords/',
     `${financialRecordsYearlyFolderTemplate}/`,
-    '/home/home-documents/',
+    'home/home-documents/',
   ];
 }
 export class DefaultFoldersUtils {

@@ -3,17 +3,13 @@ export function generateCognitoAuthRolePermissionStatements(
 ): unknown[] {
   return [
     {
-      Sid: 'AllowRootAndHomeListingOfFamilyBoxBucket',
+      Sid: 'AllowHomeListingOfFamilyBoxBucket',
       Action: 's3:ListBucket',
       Resource: `arn:aws:s3:::${bucketName}`,
       Effect: 'Allow',
       Condition: {
-        StringEquals: {
-          's3:prefix': [
-            '/',
-            '/home/',
-            '/${cognito-identity.amazonaws.com:sub}/',
-          ],
+        StringLike: {
+          's3:prefix': ['home/*'],
           's3:delimiter': ['/'],
         },
       },
@@ -25,7 +21,11 @@ export function generateCognitoAuthRolePermissionStatements(
       Effect: 'Allow',
       Condition: {
         StringLike: {
-          's3:prefix': ['/${cognito-identity.amazonaws.com:sub}/*'],
+          's3:prefix': [
+            '${cognito-identity.amazonaws.com:sub}',
+            '${cognito-identity.amazonaws.com:sub}/*',
+          ],
+          's3:delimiter': ['/'],
         },
       },
     },
